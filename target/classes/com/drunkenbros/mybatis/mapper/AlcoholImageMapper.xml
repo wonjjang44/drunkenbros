@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AlcoholImage">
+
+<resultMap type="AlcoholImage" id="alcoholImageMap">
+	<id column="alcoholImage_id" property="alcoholImage_id"/>
+	<result column="filename" property="filename"/>
+	<association column="alcohol_id" property="alcohol" javaType="Alcohol" select="Alcohol.select"/>
+</resultMap>
+
+<sql id="sql_select">
+	select alcoholImage_id,alcohol_id,filename from alcoholImage
+</sql>
+
+<insert id="insert" parameterType="AlcoholImage">
+	insert into alcoholImage(alcoholImage_id,alcohol_id,filename)
+	values(seq_alcoholImage.nextval,#{alcohol.alcohol_id},#{filename})
+</insert>
+
+<select id="selectAll" resultMap="alcoholImageMap">
+	<include refid="sql_select"/>
+	order by alcoholImage_id desc
+</select>
+
+<select id="select" resultMap="alcoholImageMap" parameterType="int">
+	<include refid="sql_select"/>
+	where alcoholImage_id=#{alcoholImage_id}
+</select>
+
+<select id="selectByAlcohol" parameterType="int" resultMap="alcoholImageMap">
+	<include refid="sql_select"/>
+	where alcohol_id=#{alcohol.alcohol_id}
+</select>
+
+<select id="selectByFkey" parameterType="int" resultType="AlcoholImage">
+	<include refid="sql_select"/>
+	where alcohol_id=#{alcohol_id}
+</select>
+
+
+<update id="update" parameterType="AlcoholImage">
+	update alcohol set filename=#{filename} where alcohol_id=#{alcohol.alcohol_id}
+</update>
+
+<delete id="delete" parameterType="int">
+	delete from alcoholImage where alcohol_id=#{alcohol.alcohol_id}
+</delete>
+
+</mapper>

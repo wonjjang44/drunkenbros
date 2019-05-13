@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Review">
+	<resultMap type="Review" id="reviewMap">
+		<id column="review_id" property="review_id" />
+		<result column="title" property="title" />
+		<result column="detail" property="detail" />
+		<result column="score" property="score" />
+		<result column="regdate" property="regdate" />
+		<result column="hit" property="hit" />
+		<association column="alcohol_id" property="alcohol"
+			javaType="Alcohol" select="Alcohol.select" />
+		<association column="member_id" property="member"
+			javaType="Member" select="Member.select" />
+	</resultMap>
+	<sql id="select_sql">
+		select review_id,alcohol_id,member_id,title,detail,score,regdate,hit from
+		review
+	</sql>
+
+	<select id="selectAll" resultMap="reviewMap">
+		<include refid="select_sql" />
+		order by review_id desc
+	</select>
+
+	<select id="select" resultMap="reviewMap">
+		<include refid="select_sql" />
+		where review_id=#{review_id}
+	</select>
+
+	<select id="selectByAlcohol" parameterType="int"
+		resultMap="reviewMap">
+		<include refid="select_sql" />
+		where alcohol_id=#{alcohol_id} order by review_id desc
+	</select>
+
+	<insert id="insert" parameterType="Review">
+		insert into review(alcohol_id,member_id,title,detail,score,regdate)
+		values(#{alcohol.alcohol_id},#{member.member_id},#{title},#{detail},#{score},now())
+	</insert>
+
+	<update id="update" parameterType="Review">
+		update review
+		set title=#{title},detail=#{detail},score=#{score}
+		where review_id=#{review_id}
+	</update>
+
+	<delete id="delete" parameterType="Review">
+		delete from review where review_id=#{review_id}
+	</delete>
+
+</mapper>

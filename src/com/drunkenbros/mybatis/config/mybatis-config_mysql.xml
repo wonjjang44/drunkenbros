@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.drunkenbros.model.domain.Topcategory" alias="Topcategory"/>
+		<typeAlias type="com.drunkenbros.model.domain.Subcategory" alias="Subcategory"/>
+		<typeAlias type="com.drunkenbros.model.domain.Alcohol" alias="Alcohol"/>
+		<typeAlias type="com.drunkenbros.model.domain.AlcoholImage" alias="AlcoholImage" />
+		<typeAlias type="com.drunkenbros.model.domain.Auth" alias="Auth"/>
+		<typeAlias type="com.drunkenbros.model.domain.Member" alias="Member"/>
+		<typeAlias type="com.drunkenbros.model.domain.Review" alias="Review"/>
+		<typeAlias type="com.drunkenbros.model.domain.Reply" alias="Reply"/>
+		<typeAlias type="com.drunkenbros.model.domain.Board" alias="Board"/>
+		<typeAlias type="com.drunkenbros.model.domain.Comments" alias="Comments" />
+		<typeAlias type="com.drunkenbros.model.domain.MemberSearchKeyWord" alias="MemberSearchKeyWord"/>
+	</typeAliases>
+	
+	<!-- MySql Mapper -->
+	<mappers>
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/TopcategoryMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/SubcategoryMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/AlcoholMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/AlcoholImageMapper.xml"/>
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/AuthMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/MemberMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/ReviewMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/ReplyMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/BoardMapper.xml"/>
+		<mapper resource="com/drunkenbros/mybatis/mysqlmapper/CommentsMapper.xml"/>
+	</mappers>
+	
+	<!-- Oracle Mapper -->
+	<!-- <mappers>
+		<mapper resource="com/drunkenbros/mybatis/mapper/TopcategoryMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mapper/SubcategoryMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mapper/AlcoholMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mapper/AlcoholImageMapper.xml"/>
+		<mapper resource="com/drunkenbros/mybatis/mapper/AuthMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mapper/MemberMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mapper/ReviewMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mapper/ReplyMapper.xml" />
+		<mapper resource="com/drunkenbros/mybatis/mapper/BoardMapper.xml"/>
+		<mapper resource="com/drunkenbros/mybatis/mapper/CommentsMapper.xml"/>
+	</mappers> -->
+	
+</configuration>

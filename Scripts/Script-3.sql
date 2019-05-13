@@ -1,0 +1,3 @@
+SELECT * FROM COMMENTS
+
+DELETE FROM comments

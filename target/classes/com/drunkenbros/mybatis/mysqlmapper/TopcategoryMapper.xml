@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Topcategory">
+
+<resultMap type="Topcategory" id="topMap">
+	<id column="topcategory_id" property="topcategory_id"/>
+	<result column="name" property="name"/>
+	<collection column="topcategory_id" property="subcategoryList" javaType="java.util.List" ofType="Subcategory" select="Subcategory.selectByFkey"/>
+</resultMap>
+
+
+<sql id="sql_select">
+	select topcategory_id,name from topcategory
+</sql>
+
+<insert id="insert" parameterType="Topcategory">
+	insert into topcategory(name)
+	values(#{name})
+</insert>
+
+<select id="select" parameterType="int" resultType="Topcategory">
+	<include refid="sql_select"/>
+	where topcategory_id=#{topcategory_id}
+</select>
+
+<select id="selectAll" resultType="Topcategory">
+	<include refid="sql_select"/>
+	order by topcategory_id desc
+</select>
+
+<select id="selectWhereReview" parameterType="int" resultMap="topMap">
+	<include refid="sql_select"/>
+	where topcategory_id=#{topcategory_id}
+</select>
+
+<update id="update" parameterType="Topcategory">
+	update topcategory set name=#{name} 
+	where topcategory_id=#{topcategory_id}
+</update>
+
+<delete id="delete" parameterType="int">
+	delete from topcategory where topcategory_id=#{topcategory_id}
+</delete>
+
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Alcohol">
+
+<resultMap type="Alcohol" id="alcoholMap">
+	<id column="alcohol_id" property="alcohol_id"/>
+	<result column="name" property="name"/>
+	<result column="degree" property="degree" javaType="double"/>
+	<result column="detail" property="detail"/>
+	<result column="hit" property="hit"/>
+	<association column="subcategory_id" property="subcategory" javaType="Subcategory" select="Subcategory.select"/>
+	<collection column="alcohol_id" property="alcoholImageList" javaType="java.util.List" ofType="AlcoholImage" select="AlcoholImage.selectByFkey"/>
+</resultMap>
+
+<resultMap type="Alcohol" id="alcoholMap2">
+	<id column="alcohol_id" property="alcohol_id"/>
+	<result column="name" property="name"/>
+	<result column="degree" property="degree" javaType="double"/>
+	<result column="detail" property="detail"/>
+	<result column="hit" property="hit"/>
+	<collection column="alcohol_id" property="alcoholImageList" javaType="java.util.List" ofType="AlcoholImage" select="AlcoholImage.selectByFkey"/>
+</resultMap>
+
+
+<sql id="sql_select">
+	select alcohol_id,subcategory_id,name,degree,detail,hit from alcohol
+</sql>
+
+<insert id="insert" parameterType="Alcohol">
+	insert into alcohol(subcategory_id,name,degree,detail)
+	values(#{subcategory.subcategory_id},#{name},#{degree},#{detail})
+	<selectKey order="AFTER" resultType="int" keyProperty="alcohol_id">
+		select alcohol_id from alcohol where alcohol_id=last_insert_id()
+	</selectKey>
+</insert>
+
+<select id="selectAll" resultMap="alcoholMap">
+	<include refid="sql_select"/>
+	order by alcohol_id desc
+</select>
+
+<select id="selectAllByHit" resultMap="alcoholMap">
+	<include refid="sql_select"/>
+	order by hit desc
+</select>
+
+<select id="selectAllByName" parameterType="String" resultMap="alcoholMap">
+	<include refid="sql_select"/>
+	where name like #{searchWord}
+	order by alcohol_id desc
+</select>
+
+<select id="selectByFKey" parameterType="int" resultMap="alcoholMap2">
+	<include refid="sql_select"/>
+	where subcategory_id=#{subcategory_id}
+</select>
+
+
+<select id="select" resultMap="alcoholMap" parameterType="int">
+	<include refid="sql_select"/>
+	where alcohol_id=#{alcohol_id}
+</select>
+
+<select id="selectBySubcategory" parameterType="int" resultMap="alcoholMap">
+	<include refid="sql_select"/>
+	where subcategory_id=#{subcategory.subcategory_id}
+</select>
+
+<update id="update" parameterType="Alcohol">
+	update alcohol set subcategory_id=#{subcategory.subcategory_id},name=#{name},
+	degree=#{degree},detail=#{detail} 
+	where alcohol_id=#{alcohol_id}
+</update>
+
+<delete id="delete" parameterType="int">
+	delete from alcohol where alcohol_id=#{alcohol_id}
+</delete>
+
+<update id="hitup" parameterType="int">
+	update alcohol set hit=hit+1 where alcohol_id=#{alcohol_id}
+</update>
+
+</mapper>

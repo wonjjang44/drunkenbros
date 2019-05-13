@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Member">
+	<sql id="select_sql">
+		select member_id, id, pass, name, birth, email, phonenum, regdate, auth_id from member
+	</sql>
+	
+	<resultMap type="Member" id="memberMap">
+		<id column="member_id" property="member_id"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="name" property="name"/>
+		<result column="birth" property="birth"/>
+		<result column="email" property="email"/>
+		<result column="phonenum" property="phonenum"/>
+		<result column="regdate" property="regdate"/>
+		<association column="auth_id" property="auth" javaType="Auth" select="Auth.select"/>		
+	</resultMap>
+	
+	<select id="selectAll" resultMap="memberMap">
+		<include refid="select_sql"/> order by member_id desc
+	</select>
+	
+	<select id="selectClient" resultMap="memberMap">
+		<include refid="select_sql"/> where auth_id=4 order by member_id desc
+	</select>
+	
+	<select id="selectManager" resultMap="memberMap">
+		<include refid="select_sql"/> where auth_id in (1,2,3) order by member_id desc
+	</select>
+	
+	<select id="select" parameterType="int" resultMap="memberMap">
+		<include refid="select_sql"/> 
+		where member_id=#{member_id}
+	</select>
+	
+	<select id="registCheck" parameterType="String" resultType="String" >
+		select id from member
+		where id=#{id}
+	</select>
+	
+	<select id="loginCheck" parameterType="Member" resultMap="memberMap">
+		<include refid="select_sql"/>
+		where id=#{id} and pass=#{pass}
+	</select>
+	
+	<insert id="insert" parameterType="Member">
+		insert into member (member_id, id, pass, name, birth, email, phonenum, regdate, auth_id)
+		values (seq_member.nextval, #{id}, #{pass}, #{name}, #{birth}, #{email}, #{phonenum}, sysdate, 4)
+	</insert>
+	
+	<update id="update" parameterType="Member">
+		update member 
+		set id=#{id}, pass=#{pass}, name=#{name}, birth=#{birth}, email=#{email}, 
+		phonenum=#{phonenum}, auth_id=#{auth.auth_id}
+		where member_id=#{member_id}
+	</update>
+		
+	<delete id="delete" parameterType="int">
+		delete from member where member_id=#{member_id}
+	</delete>
+	
+	<!-- 관리자페이지에서 쓰일 검색 관련 Sql문들 -->
+	<select id="searchAllById" parameterType="String" resultMap="memberMap">
+		<include refid="select_sql"/>
+		where id like #{search_Word} and auth_id in (1,2,3,4)
+		order by member_id desc
+	</select>
+	<select id="searchAllByName" parameterType="String" resultMap="memberMap">
+		<include refid="select_sql"/>
+		where name like #{search_Word} and auth_id in (1,2,3,4)
+		order by member_id desc
+	</select>
+	
+	<select id="searchClientById" parameterType="String" resultMap="memberMap">
+		<include refid="select_sql"/>
+		where id like #{search_Word} and auth_id=4
+		order by member_id desc
+	</select>
+	
+	<select id="searchClientByName" parameterType="String" resultMap="memberMap">
+		<include refid="select_sql"/>
+		where name like #{search_Word} and auth_id=4
+		order by member_id desc
+	</select>
+	
+	<select id="searchManagerById" parameterType="String" resultMap="memberMap">
+		<include refid="select_sql"/>
+		where id like #{search_Word} and auth_id in (1,2,3)
+		order by member_id desc
+	</select>
+	
+	<select id="searchManagerByName" parameterType="String" resultMap="memberMap">
+		<include refid="select_sql"/>
+		where name like #{search_Word} and auth_id in (1,2,3)
+		order by member_id desc
+	</select>
+	
+	<!-- 회원 한명의 아이디 가져오기 (게시판 댓글관련) -->
+	<select id="writer" resultType="String" parameterType="int">
+		select id from member where member_id=#{member_id}
+	</select>
+</mapper>

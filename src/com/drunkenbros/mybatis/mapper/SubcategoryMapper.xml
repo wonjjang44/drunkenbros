@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Subcategory">
+
+<resultMap type="Subcategory" id="subMap">
+	<id column="subcategory_id" property="subcategory_id"/>
+	<result column="name" property="name"/>
+	<association column="topcategory_id" property="topcategory" javaType="Topcategory" select="Topcategory.select"/>
+</resultMap>
+
+<resultMap type="Subcategory" id="subMap2">
+	<id column="subcategory_id" property="subcategory_id"/>
+	<result column="name" property="name"/>
+	<collection column="subcategory_id" property="alcoholList" javaType="java.util.List" ofType="Alcohol" select="Alcohol.selectByFKey"/>
+</resultMap>
+
+<sql id="sql_select">
+	select subcategory_id,topcategory_id,name from subcategory
+</sql>
+
+<insert id="insert" parameterType="Subcategory">
+	insert into subcategory(subcategory_id,topcategory_id,name)
+	values(seq_subcategory.nextval,#{topcategory.topcategory_id},#{name})
+</insert>
+
+<select id="select" parameterType="int" resultMap="subMap">
+	<include refid="sql_select"/>
+	where subcategory_id=#{subcategory_id}
+</select>
+
+<select id="selectByTopcategory" parameterType="int" resultMap="subMap">
+	<include refid="sql_select"/>
+	where topcategory_id=#{topcategory.topcategory_id}
+</select>
+
+<select id="selectByFkey" parameterType="int" resultMap="subMap2">
+	<include refid="sql_select"/>
+	where topcategory_id=#{topcategory_id}
+</select>
+
+<select id="selectAll" resultMap="subMap">
+	<include refid="sql_select"/>
+	order by subcategory_id desc
+</select>
+
+<update id="update" parameterType="Subcategory">
+	update subcategory set topcategory_id=#{topcategory.topcategory_id},name=#{name}
+	where subcategory_id=#{subcategory_id}
+</update>
+
+<delete id="delete" parameterType="int">
+	delete from subcategory where subcategory_id=#{subcategory_id}
+</delete>
+
+</mapper>

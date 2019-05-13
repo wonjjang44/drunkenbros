@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Auth">
+	<sql id="sql_select">
+		select auth_id, des from auth
+	</sql>
+	
+	<select id="select" parameterType="int" resultType="Auth">
+		<include refid="sql_select"/> 
+		where auth_id=#{auth_id}
+	</select>
+</mapper>

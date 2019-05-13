@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Comments">
+<!-- 	<insert id="insert" parameterType="Comments">
+		insert into comments
+		values(seq_comments.nextval,#{board_id},#{member_id},#{msg})
+	</insert> -->
+	
+	<resultMap id="CommentsAll" type="Comments" >
+		<id column="comments_id" property="comments_id" /><!-- primary key는 id로 나머지는 result로  -->
+		<result column="msg" property="msg"/>
+		<result column="cregdate" property="cregdate"/>
+		<association column="board_id" property="board" javaType="Board" select="Board.select"></association>
+		<association column="member_id" property="member" javaType="Member" select="Member.select"></association>
+	</resultMap>
+	
+	<!-- 댓글 전체 담기 -->
+	<select id="commentsSelectAll" parameterType="int" resultMap="CommentsAll">
+		select * from comments where board_id=#{board_id}
+	</select>
+	
+	<!-- 댓글 한건 등록 -->
+	<insert id="insertComments" parameterType="Comments">
+		insert into comments(board_id,member_id,msg,cregdate)
+		values(#{board.board_id},#{member.member_id},#{msg},now())
+		<selectKey resultType="int" keyProperty="comments_id">
+			select comments_id from comments where comments_id=last_insert_id()
+		</selectKey>
+	</insert>
+	
+	<!-- 날짜 가져오기 -->
+	<select id="cregdate" resultType="String" parameterType="int">
+		select cregdate from comments where comments_id=#{comments_id}
+	</select>
+	
+	
+	<!-- 댓글 삭제 -->
+	<delete id="oneCommentsDel" parameterType="int">
+		delete from comments where comments_id=#{comments_id}
+	</delete>
+	
+	
+	
+	
+</mapper>

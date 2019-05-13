@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Board">
+	<!-- tag도 넣어야되는데 없어서 일단 적용 안함 -->
+	<resultMap type="Board" id="boardMap">
+		<id column="board_id" property="board_id"/>
+		<result column="id" property="id"/>
+		<result column="content" property="content"/>
+		<result column="regdate" property="regdate"/>
+		<result column="hit" property="hit"/>
+		<association column="member_id" property="member" javaType="Member" select="Member.select"/>		
+	</resultMap>
+
+	<!-- 모든 게시물 보기 -->
+	<select id="selectAll" resultMap="boardMap">
+		select * from board order by board_id desc
+	</select>
+	
+	<!-- 게시물 한건 상세보기 -->
+	<select id="select" parameterType="int" resultMap="boardMap">
+		select * from board where board_id=#{board_id}
+	</select>
+	
+	<!-- 글한건 등록 -->
+	<insert id="insert" parameterType="Board">
+		insert into board(title,content,member_id,regdate)
+		values(#{title},#{content},#{member.member_id},now())
+	</insert>
+	
+	<!-- 수정 -->
+	<update id="update" parameterType="Board">
+		update board set title=#{title},content=#{content} where board_id=#{board_id}
+	</update>
+	
+	<!-- 조회수 -->
+	<update id="updateHit" parameterType="int">
+		update board set hit=hit+1 where board_id=#{board_id}
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete from board where board_id=#{board_id}
+	</delete>
+	
+	<!-- 검색기능 =======================================
+	================================================ -->
+	
+	<!-- 제목으로만 검색 -->
+	<select id="search" parameterType="String" resultType="Board">
+		select * from board where title like #{searchKeyword} 
+
+	</select>
+	
+	<!-- 검색기능 쿼리 제목+내용으로만 검색 -->
+	<select id="search_TC" parameterType="String" resultMap="boardMap">
+		select * from board where title like #{searching} or content like #{searching}
+	</select>
+	
+	<!-- 글 작성자으로만 검색 -->
+	<select id="search_writer" parameterType="String" resultMap="boardMap">
+		 select * from board where member_id like #{member.id}
+	</select>
+	
+	<!-- 댓글내용으로만 검색 -->
+	<select id="search_content" parameterType="String" resultMap="boardMap">
+		select * from comments where msg like #{msg}
+	</select>
+	
+	<!-- 댓글 작성자으로만 검색 -->
+	<select id="search_cWriter" parameterType="String" resultMap="boardMap">
+		select * from comments member_id like #{member.id}
+	</select>
+</mapper>
